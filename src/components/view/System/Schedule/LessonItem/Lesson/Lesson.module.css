@@ -1,0 +1,58 @@
+.Lesson {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    width: 100%;
+    background-color: #160947;
+    border-radius: 0.6rem;
+    padding-bottom: 0.3rem;
+}
+
+.even {
+    background-color: #006CB2;
+}
+
+.odd {
+    background-color: #CD2D09;
+}
+
+.each {
+    background-color: #160947 !important;
+}
+
+.Lesson:hover {
+    cursor: pointer;
+}
+
+.Lesson:hover .info {
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: background-color .5s !important;
+}
+
+.time {
+    margin: 0.25rem 0 !important;
+    font-weight: 500;
+    color: white;
+    font-size: 130% !important;
+}
+
+.info {
+    background-color: white;
+    transition: background-color .5s !important;
+    width: calc(100% - 0.6rem);
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.name {
+    text-align: center;
+}
+
+.weeks {
+    display: flex;
+    gap: 0.2rem;
+}

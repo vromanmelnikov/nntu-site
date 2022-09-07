@@ -1,0 +1,65 @@
+.Header {
+    width: 100vw;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    z-index: 900;
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.175);
+}
+
+.line {
+    /* width: 100% !important; */
+    padding: 0 !important;
+    margin: 0 auto !important;
+}
+
+.block {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    height: 3.5rem;
+}
+
+.logo>img {
+    height: 100%;
+}
+
+.collapse {
+    position: fixed;
+}
+
+.toggler {
+    width: 1.8rem !important;
+    height: 1.6rem !important;
+    aspect-ratio: 1;
+    border: 1px solid hsla(0, 0%, 0%, 0.175);
+    border-radius: 0.375rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color .5s;
+}
+
+.toggler:hover {
+    transition: all 0.5s;
+    background-color: hsla(253, 78%, 16%, 0.1);
+}
+
+.toggler_img {
+    margin-top: 0.15rem;
+    height: 30%;
+    transform: rotate(0);
+    transition: all 1s;
+}
+
+.rotated {
+    transform: rotate(180deg);
+    transition: all 1s;
+}

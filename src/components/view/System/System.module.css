@@ -1,0 +1,10 @@
+.System {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main {
+    position:absolute;
+    top: 4.5rem !important;
+}
