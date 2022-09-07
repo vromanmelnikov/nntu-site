@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Lesson, LessonForm, StringTime, Time } from "../../../../../models/editor.models"
+import { EditErrorModel } from "../../../../../models/errors.models"
 import { setChange } from "../../../../../store/changeReducer"
-import { setModalWindow } from "../../../../../store/editorReducer"
+import { setEditError, setModalWindow } from "../../../../../store/editorReducer"
 import { addLesson, changeLesson, delLesson } from "../../../../../store/scheduleReducer"
 import ChangeLessonForm from "./ChangeLessonForm"
 
@@ -25,33 +26,20 @@ function ChangeLessonFormContainer(props: any) {
 
     const dispatch = useDispatch()
 
-    useEffect(
-        () => {
-            dispatch(setModalWindow(true))
-            return (
-                () => {
-                    dispatch(setModalWindow(false))
-                }
-            )
-        }, []
-    )
+    // useEffect(
+    //     () => {
+    //         dispatch(setModalWindow(true))
+    //         return (
+    //             () => {
+    //                 dispatch(setModalWindow(false))
+    //             }
+    //         )
+    //     }, []
+    // )
 
     const firstSchedule = useSelector(
         (state: any) => state.schedule.firstSchedule
     )
-
-    const [error, setError] = useState({
-        flag: false,
-        name: false,
-        time: false,
-        type: false,
-        timeFormat: false
-    })
-
-    let toggleError = () => setError({
-        ...error,
-        flag: !error.flag
-    })
 
     const [form, setForm] = useState<LessonForm>({
         name: '',
@@ -276,7 +264,8 @@ function ChangeLessonFormContainer(props: any) {
         }, [change]
     )
 
-    let close = () => {
+    let toggler = () => {
+        dispatch(setModalWindow(false))
         dispatch(setChange({
             flag: false,
             dayID: -1,
@@ -285,21 +274,21 @@ function ChangeLessonFormContainer(props: any) {
         }))
     }
 
-    let closeByBack = (event: any) => {
-        let id = event.target.id
-        if (id == 'back') {
-            close()
-        }
-    }
-
     let deleteLesson = () => {
         dispatch(delLesson(change.dayID, change.value.id))
-        close()
+        toggler()
+    }
+
+    let toggleError = (error: EditErrorModel) => {
+        dispatch(setEditError({
+            ...error,
+            flag: true
+        }))
     }
 
     let ChangeLesson = () => {
 
-        let flag: any = {
+        let flag: EditErrorModel = {
             flag: false,
             name: false,
             time: false,
@@ -337,7 +326,7 @@ function ChangeLessonFormContainer(props: any) {
 
             if (startArray.length != 2 || finishArray.length != 2) {
                 flag.timeFormat = true
-                setError({ ...flag })
+                toggleError({ ...flag })
             }
             else {
 
@@ -390,7 +379,7 @@ function ChangeLessonFormContainer(props: any) {
         weekOther = weeks.join(', ')
         week.other = weekOther
         if (flag.flag == true) {
-            setError({ ...flag })
+            toggleError({ ...flag })
             return
         }
 
@@ -410,15 +399,15 @@ function ChangeLessonFormContainer(props: any) {
         }
 
         dispatch(changeLesson(change.dayID, change.lessonID, lesson))
-        close()
+        toggler()
     }
 
     let data = {
+        toggler,
+        flag: change.flag,
         types,
         weeks,
         firstSchedule,
-        closeByBack,
-        close,
         form,
         onNameChange,
         onRoomChange,
@@ -429,7 +418,6 @@ function ChangeLessonFormContainer(props: any) {
         onFinishChange,
         onTimeChange,
         ChangeLesson,
-        error,
         toggleError,
         deleteLesson
     }

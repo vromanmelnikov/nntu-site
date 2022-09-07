@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { setChange } from "../../../../../store/changeReducer"
+import { setModalWindow } from "../../../../../store/editorReducer"
 import LessonItem from "./LessonItem"
 
 function LessonItemContainer(props: any) {
@@ -17,6 +18,7 @@ function LessonItemContainer(props: any) {
             lessonID: props.lessonID,
             value: props.value
         }))
+        dispatch(setModalWindow(true))
     }
 
     let data = {

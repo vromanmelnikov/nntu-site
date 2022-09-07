@@ -16,6 +16,8 @@ function Editor(props: any) {
         (state: any) => state.editor.modalWindow
     )
 
+    console.log(modal)
+
     return (
         <>
             <SaveChangesContainer />
@@ -23,11 +25,7 @@ function Editor(props: any) {
                 props.adding == true &&
                 <AddLessonFormContainer show={props.setAdding} ID={props.ID} />
             }
-            {
-                props.change.flag == true
-                &&
-                <ChangeLessonFormContainer />
-            }
+            <ChangeLessonFormContainer />
             <Card color={'light'} className={`p-3 ${modal == true && Class.no_scroll}`}>
                 <div className={`${Class.info}`}>
                     <div className="column jc-center">
