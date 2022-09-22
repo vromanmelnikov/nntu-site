@@ -16,15 +16,10 @@ function Editor(props: any) {
         (state: any) => state.editor.modalWindow
     )
 
-    console.log(modal)
-
     return (
         <>
             <SaveChangesContainer />
-            {
-                props.adding == true &&
-                <AddLessonFormContainer show={props.setAdding} ID={props.ID} />
-            }
+            <AddLessonFormContainer />
             <ChangeLessonFormContainer />
             <Card color={'light'} className={`p-3 ${modal == true && Class.no_scroll}`}>
                 <div className={`${Class.info}`}>
@@ -34,9 +29,10 @@ function Editor(props: any) {
                             <h4>Группа: {props.group}</h4>
                             <Button
                                 onClick={props.changeGroup}
-                                className={`hover-button wh-3`}
+                                className={`hover-button`}
                             >
-                                <img src={editor} className={`hover-button-img`} />
+                                <p className={`hover-button-img`}>📝</p>
+                                {/* <img src={editor} className={`hover-button-img`} /> */}
                                 <p className={`hover-button-text`}>
                                     Изменить
                                 </p>
@@ -46,17 +42,21 @@ function Editor(props: any) {
                     <div className={``}>
                         <Button
                             onClick={props.sendScheldule}
-                            className={`hover-button wh-5`}
+                            className={`hover-button`}
                         >
-                            <img src={save} className={`hover-button-img`} />
+                            <p className={`hover-button-img`}>💾</p>
+                            {/* <img src={save} className={`hover-button-img`} /> */}
                             <p className={`hover-button-text`}>
                                 Отправить
                             </p>
                         </Button>
                     </div>
                 </div>
-                <div className={`${Class.days}`}>
-                    <div className={`${Class.days_blocks}`}>
+                <div className={`${Class.days}`}
+                    id={'days'}>
+                    <div
+                        className={`${Class.days_blocks}`}
+                    >
                         {
                             props.list.map(
                                 (value: any, day_index: number) => {

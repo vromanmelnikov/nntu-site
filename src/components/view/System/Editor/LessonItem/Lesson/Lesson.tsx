@@ -1,4 +1,4 @@
-import { Badge } from 'reactstrap'
+import { Badge, Popover, PopoverBody, PopoverHeader } from 'reactstrap'
 import Class from './Lesson.module.css'
 
 function Lesson(props: any) {
@@ -8,23 +8,42 @@ function Lesson(props: any) {
 
     let even = props.week.even == true && Class.even
     let odd = props.week.odd == true && Class.odd
-    let each = (props.week.even && props.week.odd || !props.week.even && !props.week.odd ) && Class.each
+    let each = (props.week.even && props.week.odd || !props.week.even && !props.week.odd) && Class.each
+
+    let rooms = props.room.split(', ')
 
     return (
         <div
             className={`${Class.Lesson} ${even} ${odd} ${each}`}
             onClick={props.changeLesson}
         >
-            <p
-                className={`${Class.time}`}
-            >
-                {props.time}
-            </p>
+            <div className={`${Class.left}`}>
+                <div className={`${Class.time}`}>
+                    <p>{props.start}</p>
+                    {/* <p>-</p>     */}
+                    <p>{props.finish}</p>
+                </div>
+                <p className={`${Class.room}`} id={props.room}>
+                    {props.room}
+                </p>
+            </div>
             <div className={`${Class.info}`}>
                 <h5 className={`${Class.name} m-0`}>
                     {props.name}
                 </h5>
-                <hr />
+                {
+                    props.type != ''
+                    &&
+                    <p className='m-0'>
+                        {props.type}
+                    </p>
+                }
+                {
+                    props.comment != ''
+                    &&
+                    <p className={`${Class.comment}`}>{props.comment}</p>
+                }
+                {/* <hr /> */}
                 {
                     (props.week.even == true || props.week.odd == true || props.week.other != '')
                     &&
@@ -42,28 +61,27 @@ function Lesson(props: any) {
                     </div>
                 }
                 {
-                    props.week.other != ''
+                    (props.week.even == true || props.week.odd == true) && props.week.other != ''
                     &&
                     <>
                         +
+                    </>
+                }
+                {
+                    props.week.other != ''
+                    &&
+                    <>
                         <Badge>  {props.week.other}</Badge>
 
                     </>
                 }
-                {
-                    props.type != ''
-                    &&
-                    <p className='m-0'>
-                        Тип занятия: <b>{props.type}</b>
-                    </p>
-                }
-                {
+                {/* {
                     props.room != ''
                     &&
                     <p className='m-0'>
                         Аудитория: <b>{props.room}</b>
                     </p>
-                }
+                } */}
                 {
                     props.mentor.fullname != ''
                     &&

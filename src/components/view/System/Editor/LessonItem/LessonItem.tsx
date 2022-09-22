@@ -8,11 +8,6 @@ function LessonItem(props: any) {
         <div
             className={`${Class.block}`}
         >
-            {/* {
-                props.change.flag == true
-                &&
-                <ChangeLessonFormContainer />
-            } */}
             {
                 props.index != 0 &&
                 <hr className={`${Class.line}`} />

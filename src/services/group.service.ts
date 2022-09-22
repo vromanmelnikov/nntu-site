@@ -24,7 +24,8 @@ interface LessonData {
 interface SendData {
     deleted_schedule?: any[],
     schedule?: any[],
-    group_password?: string
+    group_password?: string,
+    group_name?: string | null
 }
 
 export default class GroupService {
@@ -35,6 +36,7 @@ export default class GroupService {
     static getFormattedSchedule(group: string): Promise<any> {
         return new Promise(
             (resolve) => {
+                let max = -99999
                 let array = this.getSchedule(group).then(
                     res => {
                         console.log(res)
@@ -48,7 +50,6 @@ export default class GroupService {
                             'Воскресение'
                         ]
                         let schedule = res.data
-                        // console.log(schedule)
                         let newSchedule = schedule.map(
                             (value: any, index: number) => {
                                 let list: Lesson[] = value.map(
@@ -63,18 +64,22 @@ export default class GroupService {
                                         let even = value.weeks.indexOf(-2)
                                         let odd = value.weeks.indexOf(-1)
 
-                                        if (even == -1) {
+                                        if (even === -1) {
                                             week.even = false
                                         }
-                                        if (odd == -1) {
+                                        if (odd === -1) {
                                             week.odd = false
                                         }
 
                                         let newWeeks = value.weeks.filter(
-                                            (value: number) => value != -1 && value != -2
+                                            (value: number) => value !== -1 && value !== -2
                                         )
 
                                         week.other = newWeeks.join(', ')
+
+                                        if (value.id > max) {
+                                            max = value.id
+                                        }
 
                                         return ({
                                             id: value.id,
@@ -101,6 +106,7 @@ export default class GroupService {
                                 return day
                             }
                         )
+                        this.setMaxId(max)
                         return newSchedule
                     }
                 )
@@ -115,12 +121,13 @@ export default class GroupService {
         let data: SendData = {}
         data.deleted_schedule = deleted
         data.group_password = code
+        data.group_name = group
         let schedule = list.map(
             (day: any, day_index: number) => {
                 let newDay = day.list.map(
                     (lesson: Lesson, lesson_index: number) => {
                         let newLesson: LessonData = {}
-                        if (lesson.id != undefined) {
+                        if (lesson.id !== undefined) {
                             newLesson.id = lesson.id
                         }
                         //@ts-ignore
@@ -132,18 +139,18 @@ export default class GroupService {
                         newLesson.stopTime = lesson.time.finish
                         newLesson.day = day_index
                         newLesson.teacher = lesson.mentor.fullname
-                        newLesson.comment = lesson.comment == undefined ? '' : lesson.comment
+                        newLesson.comment = lesson.comment === undefined ? '' : lesson.comment
 
                         let weeks = []
 
-                        if (lesson.week.even == true) {
+                        if (lesson.week.even === true) {
                             weeks.push(-2)
                         }
-                        if (lesson.week.odd == true) {
+                        if (lesson.week.odd === true) {
                             weeks.push(-1)
                         }
 
-                        if (lesson.week.other != '') {
+                        if (lesson.week.other !== '') {
                             let other = lesson.week.other.split(', ').map(
                                 value => {
                                     return parseInt(value)
@@ -161,12 +168,12 @@ export default class GroupService {
             }
         )
         data.schedule = schedule
-        console.log(schedule)
+        // console.log(schedule)
         return axios.put(`${SCHEDULE_API}`, data)
     }
     static setSchedule(value: any, deleted = -1) {
 
-        if (deleted != -1) {
+        if (deleted !== -1) {
             this.addDeleted(deleted)
         }
         let obj = {
@@ -181,5 +188,11 @@ export default class GroupService {
     }
     static createDeleted() {
         window.localStorage.setItem('deleted', JSON.stringify([]))
+    }
+    static setMaxId (value: number) {
+        window.localStorage.setItem('maxID', value.toString())
+    }
+    static getMaxId (): number {
+        return parseInt(window.localStorage.maxID)
     }
 }

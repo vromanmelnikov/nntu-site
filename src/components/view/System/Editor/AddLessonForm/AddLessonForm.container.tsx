@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Lesson, LessonForm, StringTime, Time } from "../../../../../models/editor.models"
-import { setModalWindow } from "../../../../../store/editorReducer"
-import { addLesson } from "../../../../../store/scheduleReducer"
+import { EditErrorModel } from "../../../../../models/errors.models"
+import GroupService from "../../../../../services/group.service"
+import { setAdding, setChange } from "../../../../../store/changeReducer"
+import { setEditError, setModalWindow } from "../../../../../store/editorReducer"
+import { addLesson, changeGroup } from "../../../../../store/scheduleReducer"
 import AddLessonForm from "./AddLessonForm"
 
 function AddLessonFormContainer(props: any) {
+
+    const adding = useSelector(
+        (state: any) => state.change.adding
+    )
 
     const types = [
         'Лекция',
@@ -18,35 +25,50 @@ function AddLessonFormContainer(props: any) {
         'Нечетные'
     ]
 
-    const dispatch = useDispatch()
+    const days = [
+        {
+            id: 0,
+            name: 'ПН'
+        },
+        {
+            id: 1,
+            name: 'ВТ'
+        },
+        {
+            id: 2,
+            name: 'СР'
+        },
+        {
+            id: 3,
+            name: 'ЧТ'
+        },
+        {
+            id: 4,
+            name: 'ПТ'
+        },
+        {
+            id: 5,
+            name: 'СБ'
+        },
+        {
+            id: 6,
+            name: 'ВС'
+        },
+    ]
 
-    useEffect(
-        () => {
-            dispatch(setModalWindow(true))
-            return (
-                () => {
-                    dispatch(setModalWindow(false))
-                }
-            )
-        }, []
-    )
+    const [choosenDays, setChoosenDays] = useState([-1])
+
+    const dispatch = useDispatch()
 
     const firstSchedule = useSelector(
         (state: any) => state.schedule.firstSchedule
     )
 
-    const [error, setError] = useState({
-        flag: false,
-        name: false,
-        time: false,
-        type: false,
-        timeFormat: false
-    })
+    const secondSchedule = useSelector(
+        (state: any) => state.schedule.secondSchedule
+    )
 
-    let toggleError = () => setError({
-        ...error,
-        flag: !error.flag
-    })
+    const [schedule, setSchedule] = useState([...firstSchedule])
 
     const [form, setForm] = useState<LessonForm>({
         name: '',
@@ -65,7 +87,8 @@ function AddLessonFormContainer(props: any) {
         time_2: {
             start: '',
             finish: ''
-        }
+        },
+        comment: ''
     })
 
     let onNameChange = (event: any) => {
@@ -103,6 +126,12 @@ function AddLessonFormContainer(props: any) {
 
     let onRoomChange = (event: any) => {
         let value = event.target.value
+        if (value === '6') {
+            setSchedule([...secondSchedule])
+        }
+        if (value === '' || (value.length === 1 && value !== '6')) {
+            setSchedule([...firstSchedule])
+        }
         setForm({
             ...form,
             room: value
@@ -146,7 +175,7 @@ function AddLessonFormContainer(props: any) {
         }
         else {
             let value = event.target.value
-            console.log(value)
+            // console.log(value)
             setForm(
                 {
                     ...form,
@@ -213,20 +242,52 @@ function AddLessonFormContainer(props: any) {
         )
     }
 
-    let closeByBack = (event: any) => {
-        let id = event.target.id
-        if (id == 'back') {
-            props.show(false)
-        }
+    let onCommentChange = (event: any) => {
+        let value = event.target.value
+        setForm({...form, comment: value})
     }
 
-    let close = () => {
-        props.show(false)
+    let toggler = () => {
+        dispatch(setModalWindow(false))
+        dispatch(setAdding({
+            flag: false,
+            id: -1
+        }))
+    }
+
+    let toggleError = (error: EditErrorModel) => {
+        dispatch(setEditError({
+            ...error,
+            flag: true
+        }))
+    }
+
+    useEffect(
+        ()=>{
+            // console.log(adding)
+            if(adding.flag != false) {
+                let id: number = adding.id
+                setChoosenDays([id])
+                // console.log([id])
+            }
+        }, [adding]
+    )
+
+    let dayClick = (dayID: number) => {
+        if (choosenDays.indexOf(dayID) == -1) {
+            setChoosenDays([...choosenDays, dayID])
+        }
+        else {
+            let days = choosenDays.filter(
+                (value: any) => value != dayID
+            )
+            setChoosenDays([...days])
+        }
     }
 
     let addNewLesson = () => {
 
-        let flag: any = {
+        let flag: EditErrorModel = {
             flag: false,
             name: false,
             time: false,
@@ -264,7 +325,7 @@ function AddLessonFormContainer(props: any) {
 
             if (startArray.length != 2 || finishArray.length != 2) {
                 flag.timeFormat = true
-                setError({ ...flag })
+                toggleError({ ...flag })
             }
             else {
 
@@ -307,7 +368,7 @@ function AddLessonFormContainer(props: any) {
 
         let week = form.week
         let weekOther = week.other.replace(new RegExp(' ', 'g'), '')
-        console.log(weekOther)
+        // console.log(weekOther)
         let weeks: any[] = weekOther.split(',').filter(
             (value: any) => {
                 if (/^\d+$/.test(value) == true) {
@@ -319,11 +380,15 @@ function AddLessonFormContainer(props: any) {
         week.other = weekOther
 
         if (flag.flag == true) {
-            setError({ ...flag })
+            toggleError({ ...flag })
             return
         }
 
+        let newID = GroupService.getMaxId() + 1
+        GroupService.setMaxId(newID)
+
         let lesson: Lesson = {
+            newID,
             name: form.name,
             type: form.type,
             room,
@@ -331,19 +396,22 @@ function AddLessonFormContainer(props: any) {
             week,
             mentor: {
                 fullname: form.mentor
-            }
+            },
+            comment: form.comment
         }
 
-        dispatch(addLesson(props.ID, lesson))
-        close()
+        for (let item of choosenDays) {
+            dispatch(addLesson(item, lesson))
+        }
+
+        toggler()
     }
 
     let data = {
+        flag: adding.flag,
         types,
         weeks,
-        firstSchedule,
-        closeByBack,
-        close,
+        schedule,
         form,
         onNameChange,
         onRoomChange,
@@ -353,9 +421,12 @@ function AddLessonFormContainer(props: any) {
         onStartChange,
         onFinishChange,
         onTimeChange,
+        onCommentChange,
         addNewLesson,
-        error,
-        toggleError
+        toggler,
+        days,
+        choosenDays,
+        dayClick
     }
 
     return (

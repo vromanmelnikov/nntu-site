@@ -22,10 +22,10 @@ function Header(props: any) {
             name: 'Расписание',
             to: '/schedule'
         },
-        {
-            name: 'События',
-            to: '/events'
-        }
+        // {
+        //     name: 'События',
+        //     to: '/events'
+        // }
     ]
 
     let goToRoute = (to: string) => {

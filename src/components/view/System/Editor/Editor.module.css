@@ -43,7 +43,7 @@
 }
 
 .day {
-    min-width: 22% !important;
+    min-width: 25% !important;
 }
 
 .day_header {
@@ -64,6 +64,9 @@
 }
 
 @media (min-width: 1200px) {
+    .day {
+        min-width: 30% !important;
+    }
     .container {
         width: 1140px;
     }

@@ -1,4 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 * {
+  /* font-family: 'Montserrat', sans-serif !important; */
+  /* font-family: 'Roboto', sans-serif; */
+  font-family: 'Open Sans', sans-serif;
   padding: 0;
   margin: 0;
   -webkit-touch-callout: none;
@@ -7,12 +12,6 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  * {
-    scroll-behavior: smooth;
-  }
 }
 
 /* *::-webkit-scrollbar {
@@ -38,33 +37,22 @@
 } */
 
 .hover-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
   background-color: rgba(0, 0, 0, 0) !important;
   position: relative;
-  transition: background-color 0.5s, width 1s !important;
+  transition: background-color 0.5s, width .5s !important;
   border: 1px solid rgba(0, 0, 0, 0.175) !important;
   overflow-x: scroll;
   overflow-y: hidden;
 }
 
-.wh-3 {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-.wh-5 {
-  width: 2.5rem;
-  height: 2.5rem;
-}
-
 .hover-button:hover {
   border: 1px solid rgba(0, 0, 0, 0.375);
-  transition: background-color 0.5s, width 1s;
+  transition: background-color 0.5s, width .5s;
   justify-content: space-around;
-  background-color: rgba(0, 0, 0, 0.05);
-  width: 7rem;
+  background-color: rgba(0, 0, 0, 0.175) !important;
+  width: 10rem;
   overflow-x: scroll;
   overflow-y: hidden;
 }
@@ -78,28 +66,23 @@
 }
 
 .hover-button-text {
-  font-size: 100% !important;
-  margin: 0 !important;
   color: black !important;
   position: absolute;
-  top: -4% !important;
-  left: 1.5rem;
-}
-
-.wh-5 .hover-button-text {
-  font-size: 110% !important;
-  left: 2.4rem;
+  top: 15% !important;
+  left: 3rem;
 }
 
 .hover-button-img {
+  font-size: 1.3rem !important;
   height: 100%;
+  aspect-ratio: 1;
   position: absolute;
-  top: 0% !important;
-  left: 0.1rem;
+  top: 7% !important;
+  left: 0rem;
 }
 
-.wh-5 .hover-button-img {
-  left: 0rem !important;
+input {
+  padding: 0.25rem 0.5rem!important;
 }
 
 p {
@@ -155,6 +138,7 @@ hr {
   align-items: center !important;
   justify-content: center !important;
   font-weight: 400 !important;
+  background-color: whitesmoke !important;
 }
 
 .badge:hover {

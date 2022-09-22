@@ -20,6 +20,7 @@ function SaveChangesContainer (props: any) {
 
     const [code, setCode] = useState('')
     const [error, setError] = useState(false)
+    const [sendError, setSendError] = useState(false)
 
     let onCodeChange = (event: any) => {
         let value = event.target.value
@@ -50,6 +51,11 @@ function SaveChangesContainer (props: any) {
                 )
             }
         )
+        .catch(
+            error => {
+                setSendError(true)
+            }
+        )
         }
     }
 
@@ -59,6 +65,8 @@ function SaveChangesContainer (props: any) {
         code,
         onCodeChange,
         error,
+        sendError,
+        setSendError,
         onInputFocus,
         sendChanges
     }

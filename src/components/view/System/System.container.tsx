@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useRoutes } from "react-router";
-import { routes } from "../../../router/MainRouter";
+import { useLocation, useNavigate } from "react-router";
 import CookieService from "../../../services/cookie.service";
 import { changeGroup, setSchedule } from "../../../store/scheduleReducer";
 import System from "./System"
@@ -19,16 +18,25 @@ function SystemContainer(props: any) {
     useEffect(
         () => {
             let value = CookieService.getCookie('group')
+            // console.log(value)
             if (value != null) {
                 dispatch(changeGroup(value))
-                let schedule = JSON.parse(window.localStorage.schedule)
-                dispatch(setSchedule(schedule.list))
-                console.log(location.pathname)
-                let path = location.pathname
-                if (path == '/') {
-                    path = '/editor'
+                try {
+                    let schedule = JSON.parse(window.localStorage.schedule)
+                    let deleted = JSON.parse(window.localStorage.deleted)
+                    let maxID = JSON.parse(window.localStorage.maxID)
+                    dispatch(setSchedule(schedule.list))
+                    let path = location.pathname
+                    if (path === '/') {
+                        path = '/editor'
+                    }
+                    navigate(path)
                 }
-                navigate(path)
+                catch (error) {
+                    console.log(error)
+                    navigate('/group')
+                }
+
             }
             else {
                 navigate('/group')
@@ -38,7 +46,7 @@ function SystemContainer(props: any) {
 
     useEffect(
         () => {
-            if (modal == true) {
+            if (modal === true) {
                 document.body.style.overflow = 'hidden';
             }
             else {

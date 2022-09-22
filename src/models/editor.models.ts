@@ -18,7 +18,8 @@ export interface LessonForm {
     type: string,
     week: Week,
     time_1: Time,
-    time_2: StringTime
+    time_2: StringTime,
+    comment: string
 }
 
 export interface StringTime {
@@ -39,11 +40,17 @@ export interface Lesson {
     mentor: Mentor,
     week: Week,
     comment?: string,
-    id?: number
+    id?: number,
+    newID?: number
 }
 
 export interface Day {
     id: number,
     name: string,
     list: Lesson[]
+}
+
+export interface AddLessonModel {
+    flag: boolean,
+    id: number
 }

@@ -1,21 +1,8 @@
 .AddLessonForm {
-    z-index: 1000;
-    /* width: 00px; */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    min-height: 100vh !important;
-    background-color: rgba(0, 0, 0, 0.175);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: auto;
+    
 }
 
 .block {
-    width: 700px;
-    /* height:; */
 }
 
 .not_active {
@@ -62,10 +49,13 @@
     align-items: center;
     justify-content: center;
     gap: 0rem;
+    transition: background-color .5s;
 }
 
 .time:hover {
+    transition: background-color .5s;
     background-color: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
 }
 
 .choosen {
@@ -77,6 +67,19 @@
 
 .modal {
     z-index: 11000 !important;
+}
+
+.days {
+    min-width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 0.2rem;
+    overflow-x:auto;
+    /* justify-content: space-around; */
+}
+
+.days > span {
+    width: 4rem;
 }
 
 

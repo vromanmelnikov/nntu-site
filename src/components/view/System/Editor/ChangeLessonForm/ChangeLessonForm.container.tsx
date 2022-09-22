@@ -2,9 +2,10 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Lesson, LessonForm, StringTime, Time } from "../../../../../models/editor.models"
 import { EditErrorModel } from "../../../../../models/errors.models"
+import GroupService from "../../../../../services/group.service"
 import { setChange } from "../../../../../store/changeReducer"
 import { setEditError, setModalWindow } from "../../../../../store/editorReducer"
-import { addLesson, changeLesson, delLesson } from "../../../../../store/scheduleReducer"
+import { addLesson, changeLesson, copyLesson, delLesson } from "../../../../../store/scheduleReducer"
 import ChangeLessonForm from "./ChangeLessonForm"
 
 function ChangeLessonFormContainer(props: any) {
@@ -26,20 +27,15 @@ function ChangeLessonFormContainer(props: any) {
 
     const dispatch = useDispatch()
 
-    // useEffect(
-    //     () => {
-    //         dispatch(setModalWindow(true))
-    //         return (
-    //             () => {
-    //                 dispatch(setModalWindow(false))
-    //             }
-    //         )
-    //     }, []
-    // )
-
     const firstSchedule = useSelector(
         (state: any) => state.schedule.firstSchedule
     )
+
+    const secondSchedule = useSelector(
+        (state: any) => state.schedule.secondSchedule
+    )
+
+    const [schedule, setSchedule] = useState([...firstSchedule])
 
     const [form, setForm] = useState<LessonForm>({
         name: '',
@@ -58,7 +54,8 @@ function ChangeLessonFormContainer(props: any) {
         time_2: {
             start: '00:00',
             finish: '00:00'
-        }
+        },
+        comment: ''
     })
 
     let onNameChange = (event: any) => {
@@ -96,6 +93,12 @@ function ChangeLessonFormContainer(props: any) {
 
     let onRoomChange = (event: any) => {
         let value = event.target.value
+        if (value === '6') {
+            setSchedule([...secondSchedule])
+        }
+        if (value === '' || (value.length === 1 && value !== '6')) {
+            setSchedule([...firstSchedule])
+        }
         setForm({
             ...form,
             room: value
@@ -205,6 +208,11 @@ function ChangeLessonFormContainer(props: any) {
         )
     }
 
+    let onCommentChange = (event: any) => {
+        let value = event.target.value
+        setForm({ ...form, comment: value })
+    }
+
     useEffect(
         () => {
             if (change.flag !== false) {
@@ -217,17 +225,22 @@ function ChangeLessonFormContainer(props: any) {
                     finish: ''
                 }
                 let flag = false
-
-                for (let value of firstSchedule) {
+                let timeFlag = false
+                if (change.value.room.length > 0) {
+                    if (change.value.room[0] === '6') {
+                        setSchedule([...secondSchedule])
+                        timeFlag = true
+                    }
+                }
+                let array = timeFlag ? secondSchedule : firstSchedule
+                for (let value of array) {
                     if (value.start == change.value.time.start && value.finish == change.value.time.finish) {
                         time_1 = change.value.time
                         flag = true
                         break
                     }
                 }
-
                 if (flag == false) {
-                    // console.log(1)
                     let start = change.value.time.start
                     let finish = change.value.time.finish
 
@@ -258,7 +271,8 @@ function ChangeLessonFormContainer(props: any) {
                     type: change.value.type,
                     week: change.value.week,
                     time_1,
-                    time_2
+                    time_2,
+                    comment: change.value.comment
                 })
             }
         }, [change]
@@ -275,7 +289,12 @@ function ChangeLessonFormContainer(props: any) {
     }
 
     let deleteLesson = () => {
-        dispatch(delLesson(change.dayID, change.value.id))
+        // console.log({
+        //     id: change.value.id,
+        //     newID: change.value.newID
+        // })
+        let id = change.value.id != undefined ? change.value.id : change.value.newID
+        dispatch(delLesson(change.dayID, id))
         toggler()
     }
 
@@ -286,7 +305,7 @@ function ChangeLessonFormContainer(props: any) {
         }))
     }
 
-    let ChangeLesson = () => {
+    let getFormatLesson = (): Lesson | null => {
 
         let flag: EditErrorModel = {
             flag: false,
@@ -327,6 +346,7 @@ function ChangeLessonFormContainer(props: any) {
             if (startArray.length != 2 || finishArray.length != 2) {
                 flag.timeFormat = true
                 toggleError({ ...flag })
+                return null
             }
             else {
 
@@ -380,7 +400,7 @@ function ChangeLessonFormContainer(props: any) {
         week.other = weekOther
         if (flag.flag == true) {
             toggleError({ ...flag })
-            return
+            return null
         }
 
         let lesson: Lesson = {
@@ -391,15 +411,45 @@ function ChangeLessonFormContainer(props: any) {
             week,
             mentor: {
                 fullname: form.mentor
-            }
+            },
+            comment: form.comment
         }
 
         if (change.value.id != undefined) {
             lesson.id = change.value.id
         }
 
-        dispatch(changeLesson(change.dayID, change.lessonID, lesson))
-        toggler()
+        return lesson
+    }
+
+    let ChangeLesson = () => {
+
+        let lesson = getFormatLesson()
+
+        if (lesson != null) {
+            dispatch(changeLesson(change.dayID, change.lessonID, lesson))
+            toggler()
+        }
+    }
+
+    let CopyLesson = () => {
+
+        let lesson = getFormatLesson()
+        delete lesson?.id
+
+        let newID = GroupService.getMaxId() + 1
+        GroupService.setMaxId(newID)
+
+        console.log(newID)
+
+        if (lesson != null) {
+            lesson = {
+                ...lesson,
+                newID
+            }
+            dispatch(copyLesson(change.dayID, lesson))
+            // toggler()
+        }
     }
 
     let data = {
@@ -407,7 +457,7 @@ function ChangeLessonFormContainer(props: any) {
         flag: change.flag,
         types,
         weeks,
-        firstSchedule,
+        schedule,
         form,
         onNameChange,
         onRoomChange,
@@ -419,7 +469,9 @@ function ChangeLessonFormContainer(props: any) {
         onTimeChange,
         ChangeLesson,
         toggleError,
-        deleteLesson
+        deleteLesson,
+        onCommentChange,
+        CopyLesson
     }
 
     return (

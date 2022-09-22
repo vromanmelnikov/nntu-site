@@ -15,4 +15,4 @@ function System(props: any) {
     )
 }
 
-export default System
+export default System 

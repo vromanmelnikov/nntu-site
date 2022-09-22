@@ -6,6 +6,7 @@ const CHANGE_LESSON = 'CHANGE_LESSON'
 const CHANGE_GROUP = 'CHANGE_GROUP'
 const SET_SCHEDULE = 'SET_SCHEDULE'
 const DELETE_LESSON = 'DELETE_LESSON'
+const COPY_LESSON = 'COPY_LESSON'
 
 export let addLesson = (dayID: number, lesson: Lesson) => {
     return (
@@ -47,6 +48,17 @@ export let delLesson = (dayID: number, lessonID: number) => {
         dayID,
         lessonID
     })
+}
+
+export let copyLesson = (dayID: number, lesson: Lesson) => {
+    console.log({ dayID, lesson })
+    return (
+        {
+            type: COPY_LESSON,
+            dayID,
+            value: lesson
+        }
+    )
 }
 
 let initialState = {
@@ -150,32 +162,32 @@ let initialState = {
     ],
     secondSchedule: [
         {
-            start: 450,
-            finish: 545
+            start: 480,
+            finish: 575
         },
         {
-            start: 560,
-            finish: 655
+            start: 585,
+            finish: 680
         },
         {
-            start: 670,
-            finish: 765
+            start: 695,
+            finish: 790
         },
         {
-            start: 795,
-            finish: 890
+            start: 820,
+            finish: 915
         },
         {
-            start: 900,
-            finish: 995
+            start: 925,
+            finish: 1020
         },
         {
-            start: 1005,
-            finish: 1100
+            start: 1030,
+            finish: 1125
         },
         {
-            start: 1110,
-            finish: 1205
+            start: 1135,
+            finish: 1230
         },
     ]
 }
@@ -244,7 +256,9 @@ let scheduleReducer = (state: any = initialState, action: any) => {
             let newList = [...state.list]
             newList[action.dayID].list = newList[action.dayID].list.filter(
                 (value: any) => {
-                    if (value.id != action.lessonID) {
+                    let id = value.id != undefined ? value.id : value.newID
+                    console.log(id)
+                    if (id != action.lessonID || id != action.lessonID) {
                         return value
                     }
                 }
@@ -258,6 +272,36 @@ let scheduleReducer = (state: any = initialState, action: any) => {
             GroupService.setSchedule(obj.list, action.lessonID)
 
             return (obj)
+        }
+        case COPY_LESSON: {
+
+            let dayID = action.dayID
+            let newList = state.list
+
+            let newID = action.value.id != undefined ? action.value.id : action.value.newID
+
+            let lesson = {
+                newID,
+                comment: action.value.comment,
+                mentor: action.value.mentor,
+                name: action.value.name,
+                room: action.value.room,
+                time: action.value.time,
+                type: action.value.type,
+                week: action.value.week
+            }
+
+            newList[dayID].list.push({ ...lesson })
+
+            let obj = {
+                ...state,
+                list: newList
+            }
+
+            GroupService.setSchedule(obj.list)
+
+            return (obj)
+
         }
         default: {
             return (

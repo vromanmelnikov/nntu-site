@@ -36,7 +36,6 @@ function FindGroupContainer(props: any) {
                     GroupService.setSchedule(res)
                     dispatch(setSchedule(res))
                     dispatch(changeGroup(group))
-                    console.log(location.pathname)
                     navigate('/editor')
                 }
             )

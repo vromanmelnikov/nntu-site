@@ -1,4 +1,5 @@
 import { Button, Input, Modal, ModalBody, ModalFooter, ModalHeader, Popover, PopoverBody, PopoverHeader } from "reactstrap"
+import ErrorContainer from "./Error/Error.container"
 
 function SaveChanges(props: any) {
 
@@ -9,6 +10,7 @@ function SaveChanges(props: any) {
 
     return (
         <div>
+            <ErrorContainer flag={props.sendError} setFlag={props.setSendError} />
             <Modal isOpen={props.sending} toggle={props.toggler} {...args}>
                 <ModalHeader>
                     Секретный код
@@ -23,7 +25,7 @@ function SaveChanges(props: any) {
                         </PopoverBody>
                     </Popover>
                     <Input
-                        type="number"
+                        type="text"
                         id="group"
                         placeholder="Код"
                         value={props.code}
