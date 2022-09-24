@@ -10,6 +10,27 @@ import AddLessonForm from "./AddLessonForm"
 
 function AddLessonFormContainer(props: any) {
 
+    const formDraft = {
+        name: '',
+        room: '',
+        mentor: '',
+        type: '',
+        week: {
+            even: false,
+            odd: false,
+            other: ''
+        },
+        time_1: {
+            start: 0,
+            finish: 0
+        },
+        time_2: {
+            start: '',
+            finish: ''
+        },
+        comment: ''
+    }
+
     const adding = useSelector(
         (state: any) => state.change.adding
     )
@@ -70,26 +91,7 @@ function AddLessonFormContainer(props: any) {
 
     const [schedule, setSchedule] = useState([...firstSchedule])
 
-    const [form, setForm] = useState<LessonForm>({
-        name: '',
-        room: '',
-        mentor: '',
-        type: '',
-        week: {
-            even: false,
-            odd: false,
-            other: ''
-        },
-        time_1: {
-            start: 0,
-            finish: 0
-        },
-        time_2: {
-            start: '',
-            finish: ''
-        },
-        comment: ''
-    })
+    const [form, setForm] = useState<LessonForm>({...formDraft})
 
     let onNameChange = (event: any) => {
         let value = event.target.value
@@ -268,7 +270,7 @@ function AddLessonFormContainer(props: any) {
             if(adding.flag != false) {
                 let id: number = adding.id
                 setChoosenDays([id])
-                // console.log([id])
+                setForm({...formDraft})
             }
         }, [adding]
     )
@@ -403,6 +405,7 @@ function AddLessonFormContainer(props: any) {
         for (let item of choosenDays) {
             dispatch(addLesson(item, lesson))
         }
+        // dispatch(setAdding())
 
         toggler()
     }

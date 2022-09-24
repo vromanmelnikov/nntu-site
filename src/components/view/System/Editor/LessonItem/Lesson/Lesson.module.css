@@ -1,5 +1,5 @@
 .Lesson {
-    max-width: 100%;
+    width: 100%;
     /* height: 150px; */
     display: inline-flex    ;
     /* align-items: center; */
@@ -58,8 +58,12 @@
     font-size: 100% !important;
 }
 
-.room {
+.rooms {
     margin-top: auto !important;
+}
+
+.room {
+    font-size: 80% !important; 
     color: white
 }
 

@@ -10,7 +10,13 @@ function Lesson(props: any) {
     let odd = props.week.odd == true && Class.odd
     let each = (props.week.even && props.week.odd || !props.week.even && !props.week.odd) && Class.each
 
-    let rooms = props.room.split(', ')
+    let rooms = props.room.split(', ').map(
+        (value: any, index: number) => {
+            return (
+                <p className={`${Class.room}`} key={index}>{value}</p>
+            )
+        }
+    )
 
     return (
         <div
@@ -20,12 +26,11 @@ function Lesson(props: any) {
             <div className={`${Class.left}`}>
                 <div className={`${Class.time}`}>
                     <p>{props.start}</p>
-                    {/* <p>-</p>     */}
                     <p>{props.finish}</p>
                 </div>
-                <p className={`${Class.room}`} id={props.room}>
-                    {props.room}
-                </p>
+                <div className={`${Class.rooms}`}>
+                {rooms}
+                </div>
             </div>
             <div className={`${Class.info}`}>
                 <h5 className={`${Class.name} m-0`}>
@@ -86,9 +91,6 @@ function Lesson(props: any) {
                     props.mentor.fullname != ''
                     &&
                     <>
-                        <p className='m-0'>
-                            Преподаватель:
-                        </p>
                         <h6 className={`${Class.name} m-0`}>
                             {props.mentor.fullname}
                         </h6></>
