@@ -28,6 +28,19 @@ function AddLessonForm(props: any) {
                         }
                     />
                 </div>
+                <div className={`${Class.offers}`}>
+                    {
+                        props.discOffers.map(
+                            (value: string, index: number) => {
+                                return <Badge key={index} onClick={
+                                    () => {
+                                        props.onNameOfferClick(value)
+                                    }
+                                }>{value}</Badge>
+                            }
+                        )
+                    }
+                </div>
                 <div className={`form-field`}>
                     <Label className={`${Class.bold}`}>Тип предмета</Label>
                     <div className={`${Class.types_field}`}>
@@ -61,6 +74,19 @@ function AddLessonForm(props: any) {
                             }
                         />
                     </div>
+                </div>
+                <div>
+                    <Input
+                        type="text"
+                        placeholder="Аудитория..."
+                        value={props.form.room}
+                        onChange={
+                            (event) => {
+                                props.onRoomChange(event)
+                            }
+                        }
+                    />
+                    <Label>Если аудиторий несколько, напишите их через запятую</Label>
                 </div>
                 <div className={`${Class.time_list}`}>
                     <div
@@ -175,19 +201,6 @@ function AddLessonForm(props: any) {
                 <div>
                     <Input
                         type="text"
-                        placeholder="Аудитория..."
-                        value={props.form.room}
-                        onChange={
-                            (event) => {
-                                props.onRoomChange(event)
-                            }
-                        }
-                    />
-                    <Label>Если аудиторий несколько, напишите их через запятую</Label>
-                </div>
-                <div>
-                    <Input
-                        type="text"
                         placeholder="Комментарий..."
                         value={props.form.comment}
                         onChange={
@@ -208,6 +221,19 @@ function AddLessonForm(props: any) {
                             }
                         }
                     />
+                </div>
+                <div className={`${Class.offers}`}>
+                    {
+                        props.mentorOffers.map(
+                            (value: string, index: number) => {
+                                return <Badge key={index} onClick={
+                                    () => {
+                                        props.onMentorOfferClick(value)
+                                    }
+                                }>{value}</Badge>
+                            }
+                        )
+                    }
                 </div>
                 <div className={`${Class.days}`}>
                     {
@@ -235,7 +261,7 @@ function AddLessonForm(props: any) {
                         >
                             <p className={`hover-button-img`}>✅</p>
                             <p className={`hover-button-text`}>
-                                Изменить
+                                Добавить
                             </p>
                         </Button>
                     </div>

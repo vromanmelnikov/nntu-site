@@ -1,5 +1,11 @@
-import { Badge, Popover, PopoverBody, PopoverHeader } from 'reactstrap'
+import { Badge, Popover, PopoverBody, PopoverHeader, Tooltip } from 'reactstrap'
 import Class from './Lesson.module.css'
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { clearDrag, setCurrentDrag, setDraggable } from '../../../../../../store/dragReducer';
+import { moveLesson } from './../../../../../../store/scheduleReducer';
+import { clearCurrentDrag } from './../../../../../../store/dragReducer';
 
 function Lesson(props: any) {
 
@@ -18,18 +24,139 @@ function Lesson(props: any) {
         }
     )
 
+    const dispatch = useDispatch()
+
+    const current = useSelector(
+        (state: any) => state.drag.current
+    )
+
+    const draggable = useSelector(
+        (state: any) => state.drag.draggable
+    )
+
+
+    let value = {
+        lessonID: props.lessonID,
+        dayID: props.dayID
+    }
+
+    let dragFlag = draggable.lessonID == value.lessonID && draggable.dayID == value.dayID
+    let dropFlag = current.lessonID == value.lessonID && current.dayID == value.dayID
+
+    let onDragStart = (event: any, value: any) => {
+        dispatch(setDraggable(value))
+    }
+
+    let onDragLeave = (event: any, value: any) => {
+    }
+
+    let onDragEnd = (event: any, value: any) => {
+        dispatch(clearDrag())
+    }
+
+    let onDragOver = (event: any, value: any) => {
+        dispatch(setCurrentDrag(value))
+        event.preventDefault()
+    }
+
+    let onDrop = (event: any, value: any) => {
+        event.preventDefault()
+        dispatch(clearDrag())
+        dispatch(moveLesson(draggable, current))
+    }
+
+    const id = 'id_' + value.dayID + '_' + value.lessonID
+
     return (
         <div
-            className={`${Class.Lesson} ${even} ${odd} ${each}`}
+            className={`${Class.Lesson} ${even} ${odd} ${each} ${dragFlag && Class.draggable}`}
             onClick={props.changeLesson}
+            draggable={true}
+            onDragStart={
+                (event) => {
+                    onDragStart(event, value)
+                }
+            }
+            onDragLeave={
+                (event) => {
+                    onDragLeave(event, value)
+                }
+            }
+            onDragEnd={
+                (event) => {
+                    onDragEnd(event, value)
+                }
+            }
+            onDragOver={
+                (event) => {
+                    onDragOver(event, value)
+                }
+            }
         >
+            <Tooltip
+                placement="top"
+                isOpen={props.tools && draggable.lessonID == -1}
+                autohide={false}
+                target={id}
+                toggle={props.toggler}
+                onMouseOut={
+                    () => {
+                        props.changeToggler(true)
+                    }
+                }
+            >
+                <p
+                    className={`${Class.tool}`}
+                    onClick={props.deleteLesson}
+                    onMouseOver={
+                        () => {
+                            props.changeToggler(false)
+                        }
+                    }
+                >
+                    Удалить
+                </p>
+                <p
+                    className={`${Class.tool}`}
+                    onClick={props.copyLesson}
+                    onMouseOver={
+                        () => {
+                            props.changeToggler(false)
+                        }
+                    }
+                >
+                    Дублировать
+                </p>
+            </Tooltip>
+            <div
+                className={`${Class.dots}`}
+                id={id}
+            >
+                <div className={`${Class.dot} ${even} ${odd} ${each}`}></div>
+                <div className={`${Class.dot} ${even} ${odd} ${each}`}></div>
+                <div className={`${Class.dot} ${even} ${odd} ${each}`}></div>
+            </div>
+            {/* {
+                dropFlag && dragFlag == false
+                &&
+                <div
+                    className={`${Class.dropZone}`}
+                    onDrop={
+                        (event) => {
+                            onDrop(event, value)
+                        }
+                    }>
+                    <p>+</p>
+                </div>
+            } */}
+
             <div className={`${Class.left}`}>
                 <div className={`${Class.time}`}>
                     <p>{props.start}</p>
                     <p>{props.finish}</p>
                 </div>
                 <div className={`${Class.rooms}`}>
-                {rooms}
+                    {rooms}
                 </div>
             </div>
             <div className={`${Class.info}`}>
@@ -80,18 +207,11 @@ function Lesson(props: any) {
 
                     </>
                 }
-                {/* {
-                    props.room != ''
-                    &&
-                    <p className='m-0'>
-                        Аудитория: <b>{props.room}</b>
-                    </p>
-                } */}
                 {
                     props.mentor.fullname != ''
                     &&
                     <>
-                        <h6 className={`${Class.name} m-0`}>
+                        <h6 className={`${Class.mentor} m-0`}>
                             {props.mentor.fullname}
                         </h6></>
                 }

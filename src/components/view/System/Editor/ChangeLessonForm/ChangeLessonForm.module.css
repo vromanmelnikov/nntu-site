@@ -107,3 +107,25 @@
         flex-direction: column;
     }
 }
+
+.offers {
+    display: flex;
+    flex-direction: row;
+    min-width: 100%;
+    gap: 0.2rem !important;
+    overflow-x: hidden;
+}
+
+.offers:hover {
+    overflow-x: auto;
+}
+
+.offers > span {
+    font-size: 80% !important;
+    transition: background-color 0.5s;
+}
+
+.offers > span:hover {
+    background-color: #0d6efd !important;
+    transition: background-color 0.5s;
+}

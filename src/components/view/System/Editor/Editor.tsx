@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Button, Card, CardBody, CardHeader } from "reactstrap"
 import AddLessonFormContainer from "./AddLessonForm/AddLessonForm.container"
 import Class from './Editor.module.css'
@@ -9,12 +9,45 @@ import SaveChangesContainer from "./SaveChanges/SaveChanges.container"
 import editor from '../../../../assets/photos/editor.png'
 import save from '../../../../assets/photos/save.png'
 import ChangeLessonFormContainer from "./ChangeLessonForm/ChangeLessonForm.container"
+import { clearCurrentDrag, clearDrag } from "../../../../store/dragReducer"
+import { moveLesson } from './../../../../store/scheduleReducer';
+import { setDropDay } from './../../../../store/dragReducer';
 
 function Editor(props: any) {
+
+    const dispatch = useDispatch()
 
     const modal = useSelector(
         (state: any) => state.editor.modalWindow
     )
+
+    const current = useSelector(
+        (state: any) => state.drag.current
+    )
+
+    const draggable = useSelector(
+        (state: any) => state.drag.draggable
+    )
+
+    const dropDay = useSelector(
+        (state: any) => state.drag.dropDay
+    )
+
+    let onDayDragOver = (event: any, dayID: number) => {
+        event.preventDefault()
+        dispatch(setDropDay(dayID))
+        // dispatch(clearCurrentDrag())
+    }
+
+    let onDragOver = (event: any, dayID: number) => {
+        event.preventDefault()
+    }
+
+    let onDrop = (event: any, dayID: number) => {
+        event.preventDefault()
+        dispatch(clearDrag())
+        dispatch(moveLesson(draggable, {lessonID: -2, dayID}))
+    }
 
     return (
         <>
@@ -64,11 +97,18 @@ function Editor(props: any) {
                                         <Card
                                             key={day_index}
                                             className={`${Class.day}`}
+                                            onDragOver={
+                                                (event) => {
+                                                    onDayDragOver(event, day_index)
+                                                }
+                                            }
                                         >
-                                            <CardHeader className={`${Class.day_header}`}>
+                                            <CardHeader 
+                                                className={`${Class.day_header}`}
+                                                >
                                                 <p>{value.name}</p>
                                                 <Button
-                                                    color="success"
+                                                    color="primary"
                                                     onClick={
                                                         () => {
                                                             props.addLesson(value.id)
@@ -78,7 +118,7 @@ function Editor(props: any) {
                                                     +
                                                 </Button>
                                             </CardHeader>
-                                            <CardBody>
+                                            <CardBody className={`${Class.dayBody}`}>
                                                 {
                                                     value.list.map(
                                                         (value: any, lesson_index: number) => {
@@ -93,6 +133,21 @@ function Editor(props: any) {
                                                         }
                                                     )
                                                 }
+                                                <div
+                                                        className={`${Class.dropZone} ${day_index == dropDay && draggable.dayID != dropDay && Class.dropZoneHover} mt-4`}
+                                                        onDrop={
+                                                            (event) => {
+                                                                onDrop(event, day_index)
+                                                            }
+                                                        }
+                                                        onDragOver={
+                                                            (event) => {
+                                                                onDragOver(event, day_index)
+                                                            }
+                                                        }
+                                                    >
+                                                        <p>+</p>
+                                                    </div>
                                             </CardBody>
                                         </Card>
                                     )

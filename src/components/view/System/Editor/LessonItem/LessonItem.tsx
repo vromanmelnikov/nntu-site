@@ -13,6 +13,8 @@ function LessonItem(props: any) {
                 <hr className={`${Class.line}`} />
             }
             <LessonContainer
+                lessonID={props.lessonID}
+                dayID={props.dayID}
                 {...props.value}
                 changeLesson={props.changeLesson}
             />

@@ -25,7 +25,9 @@ function LessonItemContainer(props: any) {
         value: props.value,
         index: props.lessonID,
         change,
-        changeLesson
+        changeLesson,
+        lessonID: props.lessonID,
+        dayID: props.dayID
     }
 
     return (

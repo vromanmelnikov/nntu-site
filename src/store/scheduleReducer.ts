@@ -7,6 +7,7 @@ const CHANGE_GROUP = 'CHANGE_GROUP'
 const SET_SCHEDULE = 'SET_SCHEDULE'
 const DELETE_LESSON = 'DELETE_LESSON'
 const COPY_LESSON = 'COPY_LESSON'
+const MOVE_LESSON = 'MOVE_LESSON'
 
 export let addLesson = (dayID: number, lesson: Lesson) => {
     return (
@@ -51,7 +52,7 @@ export let delLesson = (dayID: number, lessonID: number) => {
 }
 
 export let copyLesson = (dayID: number, lesson: Lesson) => {
-    console.log({ dayID, lesson })
+    // console.log({ dayID, lesson })
     return (
         {
             type: COPY_LESSON,
@@ -59,6 +60,19 @@ export let copyLesson = (dayID: number, lesson: Lesson) => {
             value: lesson
         }
     )
+}
+
+interface Drag {
+    dayID: number,
+    lessonID: number
+}
+
+export let moveLesson = (dragItem: Drag, dropItem: Drag ) => {
+    return({
+        type: MOVE_LESSON,
+        dragItem,
+        dropItem
+    })
 }
 
 let initialState = {
@@ -227,6 +241,10 @@ let scheduleReducer = (state: any = initialState, action: any) => {
 
             newList[dayID].list[lessonID] = { ...action.value }
 
+            newList[dayID].list.sort(
+                (a: Lesson, b: Lesson) => a.time?.start - b.time?.start
+            )
+
             let obj = {
                 ...state,
                 list: newList
@@ -257,7 +275,6 @@ let scheduleReducer = (state: any = initialState, action: any) => {
             newList[action.dayID].list = newList[action.dayID].list.filter(
                 (value: any) => {
                     let id = value.id != undefined ? value.id : value.newID
-                    console.log(id)
                     if (id != action.lessonID || id != action.lessonID) {
                         return value
                     }
@@ -293,6 +310,10 @@ let scheduleReducer = (state: any = initialState, action: any) => {
 
             newList[dayID].list.push({ ...lesson })
 
+            newList[dayID].list.sort(
+                (a: Lesson, b: Lesson) => a.time?.start - b.time?.start
+            )
+
             let obj = {
                 ...state,
                 list: newList
@@ -302,6 +323,85 @@ let scheduleReducer = (state: any = initialState, action: any) => {
 
             return (obj)
 
+        }
+        case MOVE_LESSON: {
+
+            let newList = [...state.list]
+
+            let dragItem = action.dragItem
+            let dropItem = action.dropItem
+
+            // console.log(newList)
+            // debugger
+
+            if (dragItem.dayID == dropItem.dayID && dropItem.lessonID != -2) {
+                let first = newList[dragItem.dayID].list[dragItem.lessonID]
+                let second = newList[dragItem.dayID].list[dropItem.lessonID]
+                newList[dragItem.dayID].list[dragItem.lessonID] = {...second}
+                newList[dragItem.dayID].list[dropItem.lessonID] = {...first}
+            }
+            else {
+
+                let dropDay = newList[dropItem.dayID].list
+
+                if (dropItem.lessonID == 0) {
+                    dropDay = [
+                        newList[dragItem.dayID].list[dragItem.lessonID],
+                        ...dropDay
+                    ]
+                    newList[dropItem.dayID].list = [...dropDay]
+                }
+                else if (dropItem.lessonID == -2) {
+                    if (dragItem.dayID == dropItem.dayID) {
+                        if (newList[dropItem.dayID].list.length != 0) {
+                            dropDay = [
+                                ...dropDay,
+                                newList[dragItem.dayID].list[dragItem.lessonID],
+                            ]
+                            newList[dropItem.dayID].list = [...dropDay]
+                        }
+                    }
+                    else {
+                        dropDay = [
+                            ...dropDay,
+                            newList[dragItem.dayID].list[dragItem.lessonID],
+                        ]
+                        newList[dropItem.dayID].list = [...dropDay]
+                    }
+                    newList[dropItem.dayID].list.sort(
+                        (a: Lesson, b: Lesson) => a.time?.start - b.time?.start
+                    )
+                    
+                }
+                else {
+                    dropDay = [
+                        ...dropDay.slice(0, dropItem.lessonID),
+                        newList[dragItem.dayID].list[dragItem.lessonID],
+                        ...dropDay.slice(dropItem.lessonID, dropDay.length),
+                    ]
+                    newList[dropItem.dayID].list = [...dropDay]
+                }
+    
+                newList[dragItem.dayID].list = [...newList[dragItem.dayID].list.filter(
+                    (value: any, index: number) => {
+                        if (index != dragItem.lessonID) {
+                            return true
+                        }
+                        else {
+                            return false
+                        }
+                    }
+                )]
+            }
+
+            let obj = {
+                ...state,
+                list: newList
+            }
+            
+            GroupService.setSchedule(obj.list)
+
+            return(obj)
         }
         default: {
             return (

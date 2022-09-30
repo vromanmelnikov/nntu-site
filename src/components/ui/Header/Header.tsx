@@ -39,36 +39,47 @@ function Header(props: any) {
                     <NavbarBrand href="/" className={`${Class.logo}`}>
                         <img src={logo} />
                     </NavbarBrand>
-                    {/* <NavbarToggler onClick={toggle} className="me-2" /> */}
-                    <Dropdown isOpen={opened} toggle={toggle}>
-                        <DropdownToggle
-                            data-toggle="dropdown"
-                            tag="div"
-                            className={`${Class.toggler}`}
-                        >
-                            <img src={arrow} className={`${Class.toggler_img} ${opened && Class.rotated}`} onClick={toggle}/>
-                        </DropdownToggle>
-                        <DropdownMenu>
-                            {
-                                routes.map(
-                                    (value: any, index: number) => {
-                                        return (
-                                            <DropdownItem
-                                                key={index}
-                                                onClick={
-                                                    () => {
-                                                        goToRoute(value.to)
+                    <Nav className={`${Class.nav}`}>
+                        {
+                            routes.map(
+                                (value: any, index: number) => {
+                                    return (
+                                        <NavLink href={value.to} key={index}>{value.name}</NavLink>
+                                    )
+                                }
+                            )
+                        }
+                    </Nav>
+                    <Dropdown isOpen={opened} toggle={toggle} className={`${Class.dropdown}`}>
+                            <DropdownToggle
+                                data-toggle="dropdown"
+                                tag="div"
+                                className={`${Class.toggler}`}
+                            >
+                                <img src={arrow} className={`${Class.toggler_img} ${opened && Class.rotated}`} onClick={toggle} />
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                {
+                                    routes.map(
+                                        (value: any, index: number) => {
+                                            return (
+                                                <DropdownItem
+                                                    key={index}
+                                                    onClick={
+                                                        () => {
+                                                            goToRoute(value.to)
+                                                        }
                                                     }
-                                                }
-                                            >
-                                                {value.name}
-                                            </DropdownItem>
-                                        )
-                                    }
-                                )
-                            }
-                        </DropdownMenu>
-                    </Dropdown>
+                                                >
+                                                    {value.name}
+                                                </DropdownItem>
+                                            )
+                                        }
+                                    )
+                                }
+                            </DropdownMenu>
+                        </Dropdown>
+
                 </div>
                 {/* <hr className={`${Class.line} container`} /> */}
             </Navbar>

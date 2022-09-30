@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 * {
-  /* font-family: 'Montserrat', sans-serif !important; */
+  font-family: 'Montserrat', sans-serif !important;
   /* font-family: 'Roboto', sans-serif; */
-  font-family: 'Open Sans', sans-serif;
+  /* font-family: 'Open Sans', sans-serif; */
   padding: 0;
   margin: 0;
   -webkit-touch-callout: none;
@@ -35,6 +35,25 @@
   background-color: #006CB2;
   border-radius: 3px !important;
 } */
+
+.tooltip-inner {
+  border: 1px solid rgba(0, 0, 0, 0.175);
+}
+
+.tooltip-inner > p {
+  padding: 0.1rem 0.3rem;
+  cursor: pointer;
+  color: black;
+  font-weight: 500;
+}
+
+.tooltip-arrow, .tooltip > .tooltip-inner {
+  background-color: white;
+}
+
+.tooltip-arrow{
+  display: none !important;
+}
 
 .hover-button {
   width: 2.5rem;
@@ -83,6 +102,9 @@
 
 input {
   padding: 0.25rem 0.5rem!important;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 
 p {
@@ -115,6 +137,18 @@ hr {
   width: 90%;
 }
 
+a {
+  text-decoration: none !important;
+  color: #2c71d8 !important;
+  transition: color .5s;
+}
+
+a:hover {
+  /* font-size: 102% !important; */
+  color:#4d86da !important;
+  transition: color .5s;
+}
+
 .form-block {
   display: flex;
   flex-direction: column;
@@ -138,11 +172,18 @@ hr {
   align-items: center !important;
   justify-content: center !important;
   font-weight: 400 !important;
-  background-color: whitesmoke !important;
+  /* background-color: whitesmoke !important; */
+  transition: background-color .5s;
 }
 
 .badge:hover {
+  /* box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px, rgb(51, 51, 51, 0.175) 0px 0px 0px 3px; */
+  /* box-shadow: 1px 1px black; */
+  /* border: 1px solid rgba(0, 0, 0, 0.18); */
   cursor: pointer;
+  background-color: aliceblue !important;
+  color: black;
+  transition: background-color 1s, color .5s;
 }
 
 .bg-secondary {

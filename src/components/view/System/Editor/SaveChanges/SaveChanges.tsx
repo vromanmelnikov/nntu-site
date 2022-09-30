@@ -1,6 +1,8 @@
 import { Button, Input, Modal, ModalBody, ModalFooter, ModalHeader, Popover, PopoverBody, PopoverHeader } from "reactstrap"
 import ErrorContainer from "./Error/Error.container"
 
+import Class from './SaveChanges.module.css'
+
 function SaveChanges(props: any) {
 
     let args = {
@@ -32,6 +34,10 @@ function SaveChanges(props: any) {
                         onChange={props.onCodeChange}
                         onFocus={props.onInputFocus}
                     />
+                    <p className={`${Class.info}`}>
+                        Получить код вы можете у <a target='_blank' href="https://t.me/NNTU_App_Bot">Телеграм-бота</a>, 
+                        или обратившись в техническую поддержку в <a target='_blank' href="https://vk.com/nntuapp?_smt=groups_list%3A1">группе приложения</a>
+                    </p>
                 </ModalBody>
                 <ModalFooter>
                     <Button id="btn" onClick={props.sendChanges}>Отправить</Button>

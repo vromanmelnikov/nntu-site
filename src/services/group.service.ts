@@ -39,7 +39,7 @@ export default class GroupService {
                 let max = -99999
                 let array = this.getSchedule(group).then(
                     res => {
-                        console.log(res)
+                        // console.log(res)
                         let days = [
                             'Понедельник',
                             'Вторник',

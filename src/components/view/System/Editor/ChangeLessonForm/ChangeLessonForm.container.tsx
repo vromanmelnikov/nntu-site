@@ -14,6 +14,10 @@ function ChangeLessonFormContainer(props: any) {
         (state: any) => state.change.value
     )
 
+    const mentors = useSelector(
+        (state: any) => state.mentorList
+    )
+
     const types = [
         'Лекция',
         'Практика',
@@ -58,12 +62,42 @@ function ChangeLessonFormContainer(props: any) {
         comment: ''
     })
 
+    const [discOffers, setDiscOffers] = useState([])
+    const [mentorOffers, setMentorOffers] = useState([])
+
+    let clearOffers = () => {
+        setDiscOffers([])
+        setMentorOffers([])
+    }
+
     let onNameChange = (event: any) => {
         let value = event.target.value
+        if (value != '') {
+            let offers = mentors.disciplines.filter(
+                (variant: string) => {
+                    if (variant.toLowerCase().indexOf(value.toLowerCase()) != -1) {
+                        return true
+                    }
+                    else return false
+                }
+            )
+            setDiscOffers(offers)
+        }
+        else {
+            setDiscOffers([])
+        }
         setForm({
             ...form,
             name: value
         })
+    }
+
+    let onNameOfferClick = (value: string) => {
+        setForm({
+            ...form,
+            name: value
+        })
+        setDiscOffers([])
     }
 
     let onTypeChange = (flag: boolean, value: any) => {
@@ -107,10 +141,32 @@ function ChangeLessonFormContainer(props: any) {
 
     let onMentorChange = (event: any) => {
         let value = event.target.value
+        if (value != '') {
+            let offers = mentors.mentors.filter(
+                (variant: string) => {
+                    if (variant.toLowerCase().indexOf(value.toLowerCase()) != -1) {
+                        return true
+                    }
+                    else return false
+                }
+            )
+            setMentorOffers(offers)
+        }
+        else {
+            setMentorOffers([])
+        }
         setForm({
             ...form,
             mentor: value
         })
+    }
+
+    let onMentorOfferClick = (value: string) => {
+        setForm({
+            ...form,
+            mentor: value
+        })
+        setMentorOffers([])
     }
 
     let onWeekChange = (flag: boolean, value: number, event?: any) => {
@@ -323,10 +379,10 @@ function ChangeLessonFormContainer(props: any) {
             flag.flag = true
             flag.name = true
         }
-        if (form.type == '') {
-            flag.flag = true
-            flag.type = true
-        }
+        // if (form.type == '') {
+        //     flag.flag = true
+        //     flag.type = true
+        // }
 
         let time: Time = {
             start: 0,
@@ -377,15 +433,16 @@ function ChangeLessonFormContainer(props: any) {
             }
         }
 
-        let room = form.room.replace(new RegExp(' ', 'g'), '')
-        let rooms: any[] = room.split(',').filter(
-            (value: any) => {
-                if (/^\d+$/.test(value) == true) {
-                    return parseInt(value)
-                }
-            }
-        )
-        room = rooms.join(', ')
+        let room = form.room
+        // let room = form.room.replace(new RegExp(' ', 'g'), '')
+        // let rooms: any[] = room.split(',').filter(
+        //     (value: any) => {
+        //         if (/^\d+$/.test(value) == true) {
+        //             return parseInt(value)
+        //         }
+        //     }
+        // )
+        // room = rooms.join(', ')
 
         let week = form.week
         let weekOther = week.other.replace(new RegExp(' ', 'g'), '')
@@ -398,6 +455,12 @@ function ChangeLessonFormContainer(props: any) {
         )
         weekOther = weeks.join(', ')
         week.other = weekOther
+
+        if (week.even == false && week.odd == false) {
+            week.even = true
+            week.odd = true
+        }
+
         if (flag.flag == true) {
             toggleError({ ...flag })
             return null
@@ -471,7 +534,11 @@ function ChangeLessonFormContainer(props: any) {
         toggleError,
         deleteLesson,
         onCommentChange,
-        CopyLesson
+        CopyLesson,
+        discOffers,
+        onNameOfferClick,
+        mentorOffers,
+        onMentorOfferClick
     }
 
     return (

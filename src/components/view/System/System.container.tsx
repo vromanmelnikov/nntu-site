@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
+import ApiService from "../../../services/api.service";
 import CookieService from "../../../services/cookie.service";
+import { setMentorList } from "../../../store/mentorListReducer";
 import { changeGroup, setSchedule } from "../../../store/scheduleReducer";
 import System from "./System"
 
@@ -31,6 +33,13 @@ function SystemContainer(props: any) {
                         path = '/editor'
                     }
                     navigate(path)
+                    ApiService.getMentorsInfo().then(
+                        (res: any) => {
+                            let mentors = res.mentors
+                            let disc = res.disciplines
+                            dispatch(setMentorList(mentors, disc))
+                        }
+                    )
                 }
                 catch (error) {
                     console.log(error)

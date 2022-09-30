@@ -1,24 +1,92 @@
 .Lesson {
     width: 100%;
     /* height: 150px; */
-    display: inline-flex    ;
-    /* align-items: center; */
+    display: inline-flex;
     margin: 0 auto;
     border-radius: 0.6rem;
-    padding: 0.3rem 0.3rem 0.3rem 0
+    padding: 0.3rem 0.3rem 0.3rem 0;
+    transition: margin-top .5s;
+    position: relative;
+}
+
+.tool:hover {
+    background-color: #2c71d8 !important;
+    /* color: black; */
+    /* padding: 0.2rem; */
+    border-radius: 5px;
+    transition: background-color .5s;
+}
+
+.Lesson:hover .dots{
+    opacity: 1;
+}
+
+.dots {
+    opacity: 0;
+    transition: opacity .5s;
+    position: absolute;
+    width: 1.8rem;
+    top: 0.7rem;
+    right: 0rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.dots:hover .dot{
+    background-color: #afafaf !important;
+    transition: background-color .5s;
+}
+
+.dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background-color: #006CB2;
+    transition: background-color .5s;
+}
+
+.droped {
+    transition: margin-top .2s;
+    margin-top: 2.5rem !important;
+}
+
+.draggable {
+    opacity: 0.5;
+}
+
+.dropZone {
+    position: absolute;
+    top: -2.2rem;
+    left: 0;
+    width: 100%;
+    height: 2rem;
+    opacity: 1;
+    transition: opacity .5s;
+    border-radius: 0.6rem;
+    background-color: #1609476b !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropZone > p {
+    font-size: 2rem !important;
+    font-weight: 600;
+    color: white;
 }
 
 .info {
     max-width: 100%;
 }
 
-.info  {
-
-}
+.info {}
 
 .even {
     background-color: #006CB2;
 }
+
 .odd {
     background-color: #CD2D09;
 }
@@ -29,7 +97,7 @@
 
 .Lesson:hover {
     cursor: pointer;
-} 
+}
 
 .Lesson:hover .info {
     background-color: rgba(255, 255, 255, 0.9);
@@ -52,7 +120,7 @@
     margin: 0 0.3rem;
 }
 
-.time > p {
+.time>p {
     padding: 0 !important;
     margin: 0 !important;
     font-size: 100% !important;
@@ -63,7 +131,7 @@
 }
 
 .room {
-    font-size: 80% !important; 
+    font-size: 80% !important;
     color: white
 }
 
@@ -100,3 +168,6 @@
     opacity: 0.75;
 }
 
+.mentor {
+    font-size: 100% !important;
+}

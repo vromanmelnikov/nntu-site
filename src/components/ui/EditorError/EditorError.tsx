@@ -29,7 +29,7 @@ function EditorError (props: any) {
                             <li>Необходимо ввести или выбрать время занятия</li>
                         }
                         {
-                            props.error.timeFormat == true
+                            props.error.timeFormat == true 
                             &&
                             <li>Неправильный формат времени. Пример: 07:30 или 7:30</li>
                         }
