@@ -53,6 +53,7 @@ function FindGroupContainer(props: any) {
 
     let setNewGroup = () => {
         document.cookie = `group=${group}`
+        navigate('/editor')
         GroupService.getFormattedSchedule(group).then(
             (res: any) => {
                 GroupService.createDeleted()
@@ -69,12 +70,12 @@ function FindGroupContainer(props: any) {
             setError(true)
         }
         else {
-            // for (let variant of groupList) {
-            //     if (group == variant) {
-            //         setNewGroup()
-            //         return
-            //     }
-            // }
+            for (let variant of groupList) {
+                if (group == variant) {
+                    setNewGroup()
+                    return
+                }
+            }
             setNewGroup()
             setExisError(true)
         }
